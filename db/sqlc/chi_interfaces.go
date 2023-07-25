@@ -9,3 +9,7 @@ func (mv *Movie) Render(w http.ResponseWriter, r *http.Request) error {
 func (mv *User) Render(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
+
+func (em *EditMovieRow) Render(w http.ResponseWriter, r *http.Request) error {
+	return nil
+}

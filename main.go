@@ -33,8 +33,8 @@ func main() {
 		r.Group(func(r chi.Router) {
 			r.Use(handler.AdminMiddleware)
 			r.Post("/", handler.AddMovie)
-			// 	r.Delete("/delete/{id}", handler.DeleteTodo)
-			// 	r.Patch("/edit/{id}", handler.EditTodo)
+			r.Delete("/delete/{id}", handler.DeleteMovie)
+			r.Patch("/edit/{id}", handler.EditMovie)
 		})
 	})
 

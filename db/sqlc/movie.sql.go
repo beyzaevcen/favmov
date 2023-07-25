@@ -40,6 +40,53 @@ func (q *Queries) AddMovie(ctx context.Context, arg AddMovieParams) (Movie, erro
 	return i, err
 }
 
+const deleteMovie = `-- name: DeleteMovie :one
+DELETE FROM movies WHERE id = $1 RETURNING id
+`
+
+func (q *Queries) DeleteMovie(ctx context.Context, id int64) (int64, error) {
+	row := q.db.QueryRowContext(ctx, deleteMovie, id)
+	err := row.Scan(&id)
+	return id, err
+}
+
+const editMovie = `-- name: EditMovie :one
+UPDATE movies SET "description" = $1, "score" = $2, "image" = $3  WHERE id = $4 RETURNING title, description, score, image, release_date
+`
+
+type EditMovieParams struct {
+	Description string  `json:"description"`
+	Score       float64 `json:"score"`
+	Image       string  `json:"image"`
+	ID          int64   `json:"id"`
+}
+
+type EditMovieRow struct {
+	Title       string    `json:"title"`
+	Description string    `json:"description"`
+	Score       float64   `json:"score"`
+	Image       string    `json:"image"`
+	ReleaseDate time.Time `json:"release_date"`
+}
+
+func (q *Queries) EditMovie(ctx context.Context, arg EditMovieParams) (EditMovieRow, error) {
+	row := q.db.QueryRowContext(ctx, editMovie,
+		arg.Description,
+		arg.Score,
+		arg.Image,
+		arg.ID,
+	)
+	var i EditMovieRow
+	err := row.Scan(
+		&i.Title,
+		&i.Description,
+		&i.Score,
+		&i.Image,
+		&i.ReleaseDate,
+	)
+	return i, err
+}
+
 const getMovies = `-- name: GetMovies :many
 SELECT id, title, description, score, image, release_date FROM movies
 `
