@@ -38,6 +38,11 @@ func main() {
 		})
 	})
 
+	r.Route("/users", func(r chi.Router) {
+		r.Get("/", handler.GetAllUsers)
+		r.Post("/", handler.RegisterUser)
+	})
+
 	http.ListenAndServe(":7770", r)
 
 }
