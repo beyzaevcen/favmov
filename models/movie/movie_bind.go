@@ -1,7 +1,6 @@
 package movie
 
 import (
-	"errors"
 	db "fav-mov/db/sqlc"
 	"time"
 
@@ -27,8 +26,15 @@ func (mb *MovieBind) AddMovieParams() db.AddMovieParams {
 }
 
 func (mb *MovieBind) Bind(r *http.Request) error {
-	if len(mb.Title) < 3 {
-		return errors.New("title can't be smaller than 3 char")
-	}
+
 	return nil
+}
+
+func (mb *MovieBind) ToUpdateMovieParams(id int64) db.EditMovieParams {
+	return db.EditMovieParams{
+		Description: mb.Description,
+		Score:       mb.Score,
+		Image:       mb.Image,
+		ID:          id,
+	}
 }
