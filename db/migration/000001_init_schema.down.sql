@@ -1,0 +1,6 @@
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS movies;
+DROP TABLE IF EXISTS comments;
+DROP TABLE IF EXISTS watched_movie;
+
+
