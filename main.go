@@ -43,6 +43,15 @@ func main() {
 		r.Post("/", handler.RegisterUser)
 	})
 
+	r.Route("/comments", func(r chi.Router) {
+		r.Get("/{id}", handler.GetComments)
+
+		r.Group(func(r chi.Router) {
+			r.Use(handler.IDMiddleware)
+			r.Post("/{movie_id}", handler.AddComment)
+		})
+	})
+
 	http.ListenAndServe(":7770", r)
 
 }

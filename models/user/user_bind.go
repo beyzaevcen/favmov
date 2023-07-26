@@ -7,14 +7,18 @@ import (
 )
 
 type UserBind struct {
-	Name  string `json:"name"`
-	Email string `json:"email"`
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Image    string `json:"image"`
+	Password string `json:"password_hash"`
 }
 
 func (ru *UserBind) UserBindParams() db.RegisterUserParams {
 	return db.RegisterUserParams{
-		Name:  ru.Name,
-		Email: ru.Email,
+		Name:         ru.Name,
+		Image:        ru.Image,
+		PasswordHash: ru.Password,
+		Email:        ru.Email,
 	}
 }
 

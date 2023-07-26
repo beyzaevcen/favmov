@@ -48,6 +48,7 @@ func GetAllMovies(w http.ResponseWriter, r *http.Request) {
 	render.Status(r, http.StatusOK)
 	render.RenderList(w, r, utils.NewRenderList(moviesPayload))
 }
+
 func DeleteMovie(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	store := ctx.Value(StoreKey).(*db.Store)
