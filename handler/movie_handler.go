@@ -67,6 +67,7 @@ func DeleteMovie(w http.ResponseWriter, r *http.Request) {
 
 	render.Render(w, r, status.SuccessID(id, "Successfully deleted :)"))
 }
+
 func EditMovie(w http.ResponseWriter, r *http.Request) {
 	movieParams := &movie.MovieBind{}
 	err := render.Bind(r, movieParams)

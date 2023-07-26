@@ -21,3 +21,7 @@ func (em *GetCommentsRow) Render(w http.ResponseWriter, r *http.Request) error {
 func (em *Comment) Render(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
+
+func (em *WatchedMovie) Render(w http.ResponseWriter, r *http.Request) error {
+	return nil
+}

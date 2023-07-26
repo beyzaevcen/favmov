@@ -52,6 +52,16 @@ func main() {
 		})
 	})
 
+	r.Route("/watched_movie", func(r chi.Router) {
+		r.Group(func(r chi.Router) {
+			r.Use(handler.IDMiddleware)
+			r.Get("/", handler.GetWatchedMovies)
+			r.Post("/{movie_id}", handler.AddToWatchedMovies)
+			r.Delete("/delete/{movie_id}", handler.DeleteFromWatchedMovies)
+
+		})
+	})
+
 	http.ListenAndServe(":7770", r)
 
 }

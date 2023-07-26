@@ -9,3 +9,6 @@ DELETE FROM movies WHERE id = $1 RETURNING id;
 
 -- name: EditMovie :one
 UPDATE movies SET "description" = $1, "score" = $2, "image" = $3  WHERE id = $4 RETURNING title, description, score, image, release_date;  
+
+-- name: GetMovie :one
+SELECT title, description, score, image, release_date FROM movies WHERE id =$1;
