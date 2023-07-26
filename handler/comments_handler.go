@@ -33,6 +33,7 @@ func GetComments(w http.ResponseWriter, r *http.Request) {
 	render.Status(r, http.StatusOK)
 	render.RenderList(w, r, utils.NewRenderList(commentsPayload))
 }
+
 func AddComment(w http.ResponseWriter, r *http.Request) {
 	commentparams := &comment.CommentBind{}
 	err := render.Bind(r, commentparams)
@@ -68,6 +69,7 @@ func AddComment(w http.ResponseWriter, r *http.Request) {
 	render.Status(r, http.StatusCreated)
 	render.Render(w, r, &commentRow)
 }
+
 func DeleteComment(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	store := ctx.Value(StoreKey).(*db.Store)

@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 14.8 (Homebrew)
--- Dumped by pg_dump version 14.8 (Homebrew)
+-- Dumped from database version 14.1
+-- Dumped by pg_dump version 14.1
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -20,19 +20,26 @@ SET row_security = off;
 -- Data for Name: movies; Type: TABLE DATA; Schema: public; Owner: adil
 --
 
-INSERT INTO public.movies VALUES (1, 'The Fault in Our Stars', 'Cancer', 8.8, 'jhhfhj', '2023-07-25 15:08:03.255262+03');
-INSERT INTO public.movies VALUES (2, 'The Fault in Our Stars', 'Cancer', 8.8, 'jhhfhj', '2023-07-25 15:08:03.255262+03');
-INSERT INTO public.movies VALUES (3, 'The Fault in Our Stars', 'Cancer', 8.8, 'jhhfhj', '2023-07-25 15:08:03.255262+03');
+INSERT INTO public.movies VALUES (1, 'The Fault in Our Stars', 'Cancer', 8.8, 'jhhfhj', '2023-07-25 12:08:03.255262+00');
+INSERT INTO public.movies VALUES (2, 'The Fault in Our Stars', 'Cancer', 8.8, 'jhhfhj', '2023-07-25 12:08:03.255262+00');
+INSERT INTO public.movies VALUES (3, 'The Fault in Our Stars', 'Cancer', 8.8, 'jhhfhj', '2023-07-25 12:08:03.255262+00');
+INSERT INTO public.movies VALUES (4, 'Barbie', 'Pink', 8.8, 'jhhfhj', '2023-07-25 12:08:03.255262+00');
+INSERT INTO public.movies VALUES (5, 'Barbie', 'Pink', 8.8, 'jhhfhj', '2023-07-25 12:08:03.255262+00');
+INSERT INTO public.movies VALUES (6, 'Barbie', 'Pink', 8.8, 'jhhfhj', '2023-07-25 12:08:03.255262+00');
+INSERT INTO public.movies VALUES (7, 'Barbie', 'Pink', 8.8, 'jhhfhj', '2023-07-25 12:08:03.255262+00');
 
 
 --
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: adil
 --
 
+INSERT INTO public.users VALUES (1, 'Ezel', '', '', 'ezelimo', '2023-07-26 10:25:29.029228+00');
+
+
 --
+-- Data for Name: comments; Type: TABLE DATA; Schema: public; Owner: adil
 --
 
-INSERT INTO public.comments VALUES (1, 2, 3, 'selam', '2023-07-26 12:39:17.619598+03');
 
 
 --
@@ -45,6 +52,10 @@ INSERT INTO public.comments VALUES (1, 2, 3, 'selam', '2023-07-26 12:39:17.61959
 -- Data for Name: watched_movie; Type: TABLE DATA; Schema: public; Owner: adil
 --
 
+INSERT INTO public.watched_movie VALUES (1, 2);
+INSERT INTO public.watched_movie VALUES (1, 1);
+INSERT INTO public.watched_movie VALUES (1, 4);
+INSERT INTO public.watched_movie VALUES (1, 3);
 
 
 --

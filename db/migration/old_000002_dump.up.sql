@@ -29,11 +29,7 @@ INSERT INTO public.movies VALUES (3, 'The Fault in Our Stars', 'Cancer', 8.8, 'j
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: adil
 --
 
-INSERT INTO public.users VALUES (2, 'Ezel', 'dsfjkhs', 'gfgh', 'ezelimo', '2023-07-26 12:11:43.348112+03');
-
-
 --
--- Data for Name: comments; Type: TABLE DATA; Schema: public; Owner: adil
 --
 
 INSERT INTO public.comments VALUES (1, 2, 3, 'selam', '2023-07-26 12:39:17.619598+03');
