@@ -19,6 +19,22 @@ func (q *Queries) DeleteUser(ctx context.Context, id int64) (int64, error) {
 	return id, err
 }
 
+const getImageAndNameOfUser = `-- name: GetImageAndNameOfUser :one
+SELECT name, image FROM users WHERE id = $1 LIMIT 1
+`
+
+type GetImageAndNameOfUserRow struct {
+	Name  string `json:"name"`
+	Image string `json:"image"`
+}
+
+func (q *Queries) GetImageAndNameOfUser(ctx context.Context, id int64) (GetImageAndNameOfUserRow, error) {
+	row := q.db.QueryRowContext(ctx, getImageAndNameOfUser, id)
+	var i GetImageAndNameOfUserRow
+	err := row.Scan(&i.Name, &i.Image)
+	return i, err
+}
+
 const getUsers = `-- name: GetUsers :many
 SELECT id, name, image, password_hash, email, created_at FROM users
 `
