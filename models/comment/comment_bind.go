@@ -7,13 +7,14 @@ import (
 )
 
 type CommentBind struct {
+	MovieID int64  `json:"movie_id"`
 	Content string `json:"content"`
 }
 
-func (cb *CommentBind) AddCommentParams(userId int64, movieId int64) db.AddCommentParams {
+func (cb *CommentBind) AddCommentParams(userId int64) db.AddCommentParams {
 	return db.AddCommentParams{
 		UserID:  userId,
-		MovieID: movieId,
+		MovieID: cb.MovieID,
 		Content: cb.Content,
 	}
 }

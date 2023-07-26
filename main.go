@@ -48,7 +48,9 @@ func main() {
 
 		r.Group(func(r chi.Router) {
 			r.Use(handler.IDMiddleware)
-			r.Post("/{movie_id}", handler.AddComment)
+			r.Post("/", handler.AddComment)
+			r.Delete("/delete/{id}", handler.DeleteComment)
+			r.Get("/mycomments/{id}", handler.GetMyComments)
 		})
 	})
 

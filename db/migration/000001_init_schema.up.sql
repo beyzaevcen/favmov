@@ -12,7 +12,7 @@ CREATE TABLE "users" (
   "name" text NOT NULL,
   "image" text NOT NULL,
   "password_hash" text NOT NULL,
-  "email" text NOT NULL,
+  "email" text UNIQUE NOT NULL,
   "created_at" timestamptz NOT NULL DEFAULT (now())
 );
 
@@ -30,8 +30,6 @@ CREATE TABLE "comments" (
 );
 
 CREATE UNIQUE INDEX ON "watched_movie" ("user_id", "movie_id");
-
-CREATE UNIQUE INDEX ON "comments" ("user_id", "movie_id");
 
 ALTER TABLE "watched_movie" ADD FOREIGN KEY ("movie_id") REFERENCES "movies" ("id");
 

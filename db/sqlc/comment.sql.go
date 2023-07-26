@@ -31,6 +31,24 @@ func (q *Queries) AddComment(ctx context.Context, arg AddCommentParams) (Comment
 	return i, err
 }
 
+const deleteComment = `-- name: DeleteComment :one
+DELETE FROM comments 
+WHERE comments.id = $1 
+AND user_id = $2 RETURNING id
+`
+
+type DeleteCommentParams struct {
+	ID     int64 `json:"id"`
+	UserID int64 `json:"user_id"`
+}
+
+func (q *Queries) DeleteComment(ctx context.Context, arg DeleteCommentParams) (int64, error) {
+	row := q.db.QueryRowContext(ctx, deleteComment, arg.ID, arg.UserID)
+	var id int64
+	err := row.Scan(&id)
+	return id, err
+}
+
 const getComments = `-- name: GetComments :many
 SELECT comments.id, comments.content, comments.created_at, users.name, users.image
 FROM comments 
@@ -62,6 +80,47 @@ func (q *Queries) GetComments(ctx context.Context, movieID int64) ([]GetComments
 			&i.Name,
 			&i.Image,
 		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getMyComments = `-- name: GetMyComments :many
+SELECT comments.id, comments.content, comments.created_at
+FROM comments 
+INNER JOIN movies ON movies.id = comments.movie_id
+WHERE comments.movie_id = $1 AND comments.user_id = $2
+`
+
+type GetMyCommentsParams struct {
+	MovieID int64 `json:"movie_id"`
+	UserID  int64 `json:"user_id"`
+}
+
+type GetMyCommentsRow struct {
+	ID        int64     `json:"id"`
+	Content   string    `json:"content"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
+func (q *Queries) GetMyComments(ctx context.Context, arg GetMyCommentsParams) ([]GetMyCommentsRow, error) {
+	rows, err := q.db.QueryContext(ctx, getMyComments, arg.MovieID, arg.UserID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetMyCommentsRow
+	for rows.Next() {
+		var i GetMyCommentsRow
+		if err := rows.Scan(&i.ID, &i.Content, &i.CreatedAt); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
