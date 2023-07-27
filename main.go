@@ -50,7 +50,7 @@ func main() {
 			r.Use(handler.IDMiddleware)
 			r.Post("/", handler.AddComment)
 			r.Delete("/delete/{id}", handler.DeleteComment)
-			r.Get("/mycomments/{id}", handler.GetMyComments)
+			r.Get("/my", handler.GetMyComments)
 		})
 	})
 

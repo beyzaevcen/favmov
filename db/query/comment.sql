@@ -16,4 +16,4 @@ AND user_id = $2 RETURNING id;
 SELECT comments.id, comments.content, comments.created_at
 FROM comments 
 INNER JOIN movies ON movies.id = comments.movie_id
-WHERE comments.movie_id = $1 AND comments.user_id = $2;
+WHERE comments.user_id = $1;

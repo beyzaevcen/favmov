@@ -74,6 +74,10 @@ func DeleteComment(w http.ResponseWriter, r *http.Request) {
 	userID := ctx.Value(IDKey).(int64)
 
 	ID, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
+	if err != nil {
+		render.Render(w, r, status.ErrBadRequest(err))
+		return
+	}
 
 	id, err := store.DeleteComment(ctx, db.DeleteCommentParams{
 		ID:     ID,
@@ -92,13 +96,13 @@ func GetMyComments(w http.ResponseWriter, r *http.Request) {
 	store := ctx.Value(StoreKey).(*db.Store)
 	userID := ctx.Value(IDKey).(int64)
 
-	movieID, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
-	if err != nil {
-		render.Render(w, r, status.ErrBadRequest(err))
-		return
-	}
+	// movieID, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
+	// if err != nil {
+	// 	render.Render(w, r, status.ErrBadRequest(err))
+	// 	return
+	// }
 
-	comments, err := store.GetMyComments(ctx, db.GetMyCommentsParams{MovieID: movieID, UserID: userID})
+	comments, err := store.GetMyComments(ctx, userID)
 	if err != nil {
 		render.Render(w, r, status.ErrInternal(err))
 		return

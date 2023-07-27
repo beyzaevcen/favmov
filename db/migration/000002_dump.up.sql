@@ -20,19 +20,18 @@ SET row_security = off;
 -- Data for Name: movies; Type: TABLE DATA; Schema: public; Owner: adil
 --
 
-INSERT INTO public.movies VALUES (1, 'The Fault in Our Stars', 'Cancer', 8.8, 'jhhfhj', '2023-07-25 15:08:03.255262+03');
-INSERT INTO public.movies VALUES (2, 'The Fault in Our Stars', 'Cancer', 8.8, 'jhhfhj', '2023-07-25 15:08:03.255262+03');
-INSERT INTO public.movies VALUES (3, 'The Fault in Our Stars', 'Cancer', 8.8, 'jhhfhj', '2023-07-25 15:08:03.255262+03');
 
 
 --
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: adil
 --
 
+
+
 --
+-- Data for Name: comments; Type: TABLE DATA; Schema: public; Owner: adil
 --
 
-INSERT INTO public.comments VALUES (1, 2, 3, 'selam', '2023-07-26 12:39:17.619598+03');
 
 
 --
