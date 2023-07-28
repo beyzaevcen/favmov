@@ -7,18 +7,18 @@ import (
 )
 
 type UserBind struct {
-	Name     string `json:"name"`
-	Email    string `json:"email"`
-	Image    string `json:"image"`
-	Password string `json:"password_hash"`
+	Name       string `json:"name"`
+	FirebaseID string `json:"uid"`
+	Email      string `json:"email"`
+	Image      string `json:"image"`
 }
 
-func (ru *UserBind) UserBindParams(hashedPassword string) db.RegisterUserParams {
+func (ru *UserBind) UserBindParams() db.RegisterUserParams {
 	return db.RegisterUserParams{
-		Name:         ru.Name,
-		Image:        ru.Image,
-		PasswordHash: hashedPassword,
-		Email:        ru.Email,
+		Name:        ru.Name,
+		FirebaseUid: ru.FirebaseID,
+		Image:       ru.Image,
+		Email:       ru.Email,
 	}
 }
 

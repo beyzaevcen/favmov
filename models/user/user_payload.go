@@ -11,28 +11,25 @@ type UserPayload struct {
 	Name      string    `json:"name"`
 	Image     string    `json:"image"`
 	Email     string    `json:"email"`
-	Token     string    `json:"token"`
 	CreatedAt time.Time `json:"created_at"`
 }
 
-func NewUserPayload(data db.RegisterUserRow, token string) *UserPayload {
+func NewUserPayload(data db.RegisterUserRow) *UserPayload {
 	return &UserPayload{
 		ID:        data.ID,
 		Name:      data.Name,
 		Image:     data.Image,
 		Email:     data.Email,
-		Token:     token,
 		CreatedAt: data.CreatedAt,
 	}
 }
 
-func NewUserPayloadFromUser(data db.User, token string) *UserPayload {
+func NewUserPayloadFromUser(data db.User) *UserPayload {
 	return &UserPayload{
 		ID:        data.ID,
 		Name:      data.Name,
 		Image:     data.Image,
 		Email:     data.Email,
-		Token:     token,
 		CreatedAt: data.CreatedAt,
 	}
 }

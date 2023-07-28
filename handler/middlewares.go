@@ -6,10 +6,10 @@ import (
 	"fav-mov/models/status"
 	"net/http"
 	"strconv"
+	"strings"
 
-	"github.com/go-chi/jwtauth"
+	"firebase.google.com/go/auth"
 	"github.com/go-chi/render"
-	"github.com/lestrrat-go/jwx/jwt"
 )
 
 func AdminMiddleware(next http.Handler) http.Handler {
@@ -35,32 +35,62 @@ func ProvideStore(store *db.Store) func(next http.Handler) http.Handler {
 		})
 	}
 }
-func ProvideJwtAuth(tokenAuth *jwtauth.JWTAuth) func(next http.Handler) http.Handler {
-	return func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			ctx := context.WithValue(r.Context(), JwtAuthKey, tokenAuth)
-			next.ServeHTTP(w, r.WithContext(ctx))
-		})
-	}
-}
 
 func UserIDMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		token, claims, err := jwtauth.FromContext(ctx)
+		token := ctx.Value(FirebaseTokenKey).(*auth.Token)
 
-		if err != nil || token == nil || jwt.Validate(token) != nil {
-			render.Render(w, r, status.ErrUnauthorized("Incorrect token."))
+		store := ctx.Value(StoreKey).(*db.Store)
+
+		userID, err := store.GetUserIDByUID(ctx, token.UID)
+		if err != nil {
+			render.Render(w, r, status.ErrUnauthorized("user id could not be found"))
 			return
 		}
 
-		userID, ok := claims["user_id"]
-		if !ok {
-			render.Render(w, r, status.ErrUnauthorized("Missing token"))
-			return
-		}
+		ctx = context.WithValue(ctx, UserIdKey, userID)
 
-		ctx = context.WithValue(ctx, IDKey, int64(userID.(float64)))
 		next.ServeHTTP(w, r.WithContext(ctx))
+
 	})
+}
+
+func FirebaseAuthentication(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := r.Context()
+		client := ctx.Value(FirebaseAuthKey).(*auth.Client)
+
+		idToken := r.Header.Get("Authorization")
+		splitToken := strings.Split(idToken, "Bearer ")
+
+		if len(splitToken) != 2 {
+			idToken = ""
+		} else {
+			idToken = splitToken[1]
+		}
+
+		if idToken == "" {
+			render.Render(w, r, status.ErrUnauthorized("Missing authorization token."))
+			return
+		}
+
+		token, err := client.VerifyIDToken(ctx, idToken)
+
+		if err != nil {
+			render.Render(w, r, status.ErrUnauthorized("Invalid token."))
+			return
+		}
+
+		next.ServeHTTP(w, r.WithContext(context.WithValue(ctx, FirebaseTokenKey, token)))
+	})
+}
+
+func ProvideFirebase(client *auth.Client) func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			ctx := context.WithValue(r.Context(), FirebaseAuthKey, client)
+			next.ServeHTTP(w, r.WithContext(ctx))
+		})
+	}
 }

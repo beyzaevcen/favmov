@@ -1,15 +1,18 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	db "fav-mov/db/sqlc"
 	"fav-mov/handler"
 	"log"
 	"net/http"
 
+	firebase "firebase.google.com/go"
+	"firebase.google.com/go/auth"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
-	"github.com/go-chi/jwtauth"
+	"google.golang.org/api/option"
 
 	_ "github.com/lib/pq"
 )
@@ -17,13 +20,13 @@ import (
 func main() {
 	store := CreateStore()
 
-	tokenAuth := jwtauth.New("HS256", []byte("selam ben çok gizli bir key. _?*)"), nil)
+	client := CreateFirebaseAuth()
 
 	r := chi.NewRouter()
 	r.Use(middleware.RealIP)
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
-	r.Use(handler.ProvideStore(store), handler.ProvideJwtAuth(tokenAuth), jwtauth.Verifier(tokenAuth))
+	r.Use(handler.ProvideStore(store), handler.ProvideFirebase(client))
 
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
@@ -79,4 +82,23 @@ func CreateStore() *db.Store {
 		log.Fatal(err)
 	}
 	return db.NewStore(database)
+}
+
+func CreateFirebaseAuth() *auth.Client {
+	opt := option.WithCredentialsFile("favmov-53831-firebase-adminsdk-ji3yh-76fe49a863.json")
+	app, err := firebase.NewApp(context.Background(), nil, opt)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	ctx := context.TODO()
+
+	context.Background()
+
+	client, err := app.Auth(ctx)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	return client
 }

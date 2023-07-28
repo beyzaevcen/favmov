@@ -1,5 +1,8 @@
 -- name: RegisterUser :one
-INSERT INTO users (name, image, password_hash, email ) VALUES ($1, $2, $3, $4) RETURNING id, name, image, email, created_at;
+INSERT INTO users 
+(name, firebase_uid, image, email )
+VALUES ($1, $2, $3, $4) 
+RETURNING id, name, image, email, created_at;
 
 -- name: GetUsers :many
 SELECT * FROM users;
@@ -21,3 +24,6 @@ SELECT * FROM users WHERE email = sqlc.arg(email) ::text LIMIT 1;
 
 -- name: GetUserById :one
 SELECT * FROM users WHERE id = sqlc.arg(user_id) ::bigint LIMIT 1;
+
+-- name: GetUserIDByUID :one
+SELECT id FROM users WHERE firebase_uid = $1 LIMIT 1;

@@ -7,9 +7,7 @@ import (
 	"fav-mov/utils"
 	"net/http"
 
-	"github.com/go-chi/jwtauth"
 	"github.com/go-chi/render"
-	"golang.org/x/crypto/bcrypt"
 )
 
 func RegisterUser(w http.ResponseWriter, r *http.Request) {
@@ -23,27 +21,14 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	store := ctx.Value(StoreKey).(*db.Store)
 
-	hashedPass, err := bcrypt.GenerateFromPassword([]byte(userParams.Password), bcrypt.DefaultCost)
-	if err != nil {
-		render.Render(w, r, status.ErrBadRequest(err))
-		return
-	}
-
-	usr, err := store.RegisterUser(ctx, userParams.UserBindParams(string(hashedPass)))
-	if err != nil {
-		render.Render(w, r, status.ErrInternal(err))
-		return
-	}
-
-	tokenAuth := ctx.Value(JwtAuthKey).(*jwtauth.JWTAuth)
-	tokenString, err := utils.GenerateToken(usr.ID, tokenAuth)
+	usr, err := store.RegisterUser(ctx, userParams.UserBindParams())
 	if err != nil {
 		render.Render(w, r, status.ErrInternal(err))
 		return
 	}
 
 	render.Status(r, http.StatusCreated)
-	render.Render(w, r, user.NewUserPayload(usr, tokenString))
+	render.Render(w, r, user.NewUserPayload(usr))
 }
 
 func LoginUser(w http.ResponseWriter, r *http.Request) {
@@ -63,21 +48,13 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = bcrypt.CompareHashAndPassword([]byte(userData.PasswordHash), []byte(loginUser.Password))
-	if err != nil {
-		render.Render(w, r, status.ErrUnauthorized("wrong credentials"))
-		return
-	}
-
-	tokenAuth := ctx.Value(JwtAuthKey).(*jwtauth.JWTAuth)
-	tokenString, err := utils.GenerateToken(userData.ID, tokenAuth)
 	if err != nil {
 		render.Render(w, r, status.ErrInternal(err))
 		return
 	}
 
 	render.Status(r, http.StatusOK)
-	render.Render(w, r, user.NewUserPayloadFromUser(userData, tokenString))
+	render.Render(w, r, user.NewUserPayloadFromUser(userData))
 }
 
 func GetAllUsers(w http.ResponseWriter, r *http.Request) {
@@ -108,13 +85,7 @@ func GetUserById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tokenAuth := ctx.Value(JwtAuthKey).(*jwtauth.JWTAuth)
-	tokenString, err := utils.GenerateToken(userData.ID, tokenAuth)
-	if err != nil {
-		render.Render(w, r, status.ErrInternal(err))
-		return
-	}
 	render.Status(r, http.StatusOK)
-	render.Render(w, r, user.NewUserPayloadFromUser(userData, tokenString))
+	render.Render(w, r, user.NewUserPayloadFromUser(userData))
 
 }

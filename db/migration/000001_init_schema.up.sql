@@ -10,8 +10,8 @@ CREATE TABLE "movies" (
 CREATE TABLE "users" (
   "id" bigserial PRIMARY KEY,
   "name" text NOT NULL,
+  "firebase_uid" text NOT NULL,
   "image" text NOT NULL,
-  "password_hash" text NOT NULL,
   "email" text UNIQUE NOT NULL,
   "created_at" timestamptz NOT NULL DEFAULT (now())
 );

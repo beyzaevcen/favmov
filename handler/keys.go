@@ -7,4 +7,7 @@ const (
 	AdminKey
 	IDKey
 	JwtAuthKey
+	FirebaseTokenKey
+	UserIdKey
+	FirebaseAuthKey
 )
