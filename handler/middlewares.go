@@ -3,8 +3,13 @@ package handler
 import (
 	"context"
 	db "fav-mov/db/sqlc"
+	"fav-mov/models/status"
 	"net/http"
 	"strconv"
+
+	"github.com/go-chi/jwtauth"
+	"github.com/go-chi/render"
+	"github.com/lestrrat-go/jwx/jwt"
 )
 
 func AdminMiddleware(next http.Handler) http.Handler {
@@ -30,19 +35,32 @@ func ProvideStore(store *db.Store) func(next http.Handler) http.Handler {
 		})
 	}
 }
+func ProvideJwtAuth(tokenAuth *jwtauth.JWTAuth) func(next http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			ctx := context.WithValue(r.Context(), JwtAuthKey, tokenAuth)
+			next.ServeHTTP(w, r.WithContext(ctx))
+		})
+	}
+}
 
-func IDMiddleware(next http.Handler) http.Handler {
+func UserIDMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		id := r.Header.Get("UserId")
-		ids, err := strconv.ParseInt(id, 10, 64)
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write([]byte("ID int olmayabilir"))
+		ctx := r.Context()
+		token, claims, err := jwtauth.FromContext(ctx)
+
+		if err != nil || token == nil || jwt.Validate(token) != nil {
+			render.Render(w, r, status.ErrUnauthorized("Incorrect token."))
 			return
 		}
 
-		ctx := context.WithValue(r.Context(), IDKey, ids)
+		userID, ok := claims["user_id"]
+		if !ok {
+			render.Render(w, r, status.ErrUnauthorized("Missing token"))
+			return
+		}
 
+		ctx = context.WithValue(ctx, IDKey, int64(userID.(float64)))
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }

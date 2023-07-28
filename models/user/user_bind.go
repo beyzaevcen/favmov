@@ -13,11 +13,11 @@ type UserBind struct {
 	Password string `json:"password_hash"`
 }
 
-func (ru *UserBind) UserBindParams() db.RegisterUserParams {
+func (ru *UserBind) UserBindParams(hashedPassword string) db.RegisterUserParams {
 	return db.RegisterUserParams{
 		Name:         ru.Name,
 		Image:        ru.Image,
-		PasswordHash: ru.Password,
+		PasswordHash: hashedPassword,
 		Email:        ru.Email,
 	}
 }

@@ -1,5 +1,5 @@
 -- name: RegisterUser :one
-INSERT INTO users (name, image, password_hash, email ) VALUES ($1, $2, $3, $4) RETURNING *;
+INSERT INTO users (name, image, password_hash, email ) VALUES ($1, $2, $3, $4) RETURNING id, name, image, email, created_at;
 
 -- name: GetUsers :many
 SELECT * FROM users;
@@ -15,3 +15,9 @@ WHERE id = $2 RETURNING *;
 -- name: GetImageAndNameOfUser :one
 SELECT name, image FROM users 
 WHERE id = $1 LIMIT 1;
+
+-- name: GetUserByEmail :one
+SELECT * FROM users WHERE email = sqlc.arg(email) ::text LIMIT 1;
+
+-- name: GetUserById :one
+SELECT * FROM users WHERE id = sqlc.arg(user_id) ::bigint LIMIT 1;

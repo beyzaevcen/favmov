@@ -7,10 +7,12 @@ package db
 
 import (
 	"context"
+	"time"
 )
 
 const deleteUser = `-- name: DeleteUser :one
-DELETE FROM users WHERE id = $1 RETURNING id
+DELETE FROM users
+WHERE id = $1 RETURNING id
 `
 
 func (q *Queries) DeleteUser(ctx context.Context, id int64) (int64, error) {
@@ -20,7 +22,8 @@ func (q *Queries) DeleteUser(ctx context.Context, id int64) (int64, error) {
 }
 
 const getImageAndNameOfUser = `-- name: GetImageAndNameOfUser :one
-SELECT name, image FROM users WHERE id = $1 LIMIT 1
+SELECT name, image FROM users 
+WHERE id = $1 LIMIT 1
 `
 
 type GetImageAndNameOfUserRow struct {
@@ -32,6 +35,42 @@ func (q *Queries) GetImageAndNameOfUser(ctx context.Context, id int64) (GetImage
 	row := q.db.QueryRowContext(ctx, getImageAndNameOfUser, id)
 	var i GetImageAndNameOfUserRow
 	err := row.Scan(&i.Name, &i.Image)
+	return i, err
+}
+
+const getUserByEmail = `-- name: GetUserByEmail :one
+SELECT id, name, image, password_hash, email, created_at FROM users WHERE email = $1 ::text LIMIT 1
+`
+
+func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error) {
+	row := q.db.QueryRowContext(ctx, getUserByEmail, email)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Image,
+		&i.PasswordHash,
+		&i.Email,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const getUserById = `-- name: GetUserById :one
+SELECT id, name, image, password_hash, email, created_at FROM users WHERE id = $1 ::bigint LIMIT 1
+`
+
+func (q *Queries) GetUserById(ctx context.Context, userID int64) (User, error) {
+	row := q.db.QueryRowContext(ctx, getUserById, userID)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Image,
+		&i.PasswordHash,
+		&i.Email,
+		&i.CreatedAt,
+	)
 	return i, err
 }
 
@@ -70,7 +109,7 @@ func (q *Queries) GetUsers(ctx context.Context) ([]User, error) {
 }
 
 const registerUser = `-- name: RegisterUser :one
-INSERT INTO users (name, image, password_hash, email ) VALUES ($1, $2, $3, $4) RETURNING id, name, image, password_hash, email, created_at
+INSERT INTO users (name, image, password_hash, email ) VALUES ($1, $2, $3, $4) RETURNING id, name, image, email, created_at
 `
 
 type RegisterUserParams struct {
@@ -80,19 +119,26 @@ type RegisterUserParams struct {
 	Email        string `json:"email"`
 }
 
-func (q *Queries) RegisterUser(ctx context.Context, arg RegisterUserParams) (User, error) {
+type RegisterUserRow struct {
+	ID        int64     `json:"id"`
+	Name      string    `json:"name"`
+	Image     string    `json:"image"`
+	Email     string    `json:"email"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
+func (q *Queries) RegisterUser(ctx context.Context, arg RegisterUserParams) (RegisterUserRow, error) {
 	row := q.db.QueryRowContext(ctx, registerUser,
 		arg.Name,
 		arg.Image,
 		arg.PasswordHash,
 		arg.Email,
 	)
-	var i User
+	var i RegisterUserRow
 	err := row.Scan(
 		&i.ID,
 		&i.Name,
 		&i.Image,
-		&i.PasswordHash,
 		&i.Email,
 		&i.CreatedAt,
 	)
@@ -100,7 +146,8 @@ func (q *Queries) RegisterUser(ctx context.Context, arg RegisterUserParams) (Use
 }
 
 const updateNameOfUser = `-- name: UpdateNameOfUser :one
-UPDATE users SET "name" = $1 WHERE id = $2 RETURNING id, name, image, password_hash, email, created_at
+UPDATE users SET "name" = $1 
+WHERE id = $2 RETURNING id, name, image, password_hash, email, created_at
 `
 
 type UpdateNameOfUserParams struct {

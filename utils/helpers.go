@@ -1,6 +1,11 @@
 package utils
 
-import "github.com/go-chi/render"
+import (
+	"time"
+
+	"github.com/go-chi/jwtauth"
+	"github.com/go-chi/render"
+)
 
 // GOCHI UTILS
 func NewRenderList[T render.Renderer](items []T) []render.Renderer {
@@ -88,4 +93,21 @@ func Last[T any](arr []T) T {
 
 func RemoveAt[T any](s []T, index int) []T {
 	return append(s[:index], s[index+1:]...)
+}
+
+func GenerateToken(userID int64, tokenAuth *jwtauth.JWTAuth) (string, error) {
+	expireDate := time.Now().Add(30 * 24 * time.Hour)
+
+	claims := map[string]any{
+		"user_id": userID,
+	}
+
+	jwtauth.SetExpiry(claims, expireDate)
+
+	_, tokenString, err := tokenAuth.Encode(claims)
+	if err != nil {
+		return "", err
+	}
+	return tokenString, nil
+
 }

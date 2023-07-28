@@ -20,26 +20,12 @@ SET row_security = off;
 -- Data for Name: movies; Type: TABLE DATA; Schema: public; Owner: adil
 --
 
-<<<<<<< HEAD
-=======
-INSERT INTO public.movies VALUES (1, 'The Fault in Our Stars', 'Cancer', 8.8, 'jhhfhj', '2023-07-25 12:08:03.255262+00');
-INSERT INTO public.movies VALUES (2, 'The Fault in Our Stars', 'Cancer', 8.8, 'jhhfhj', '2023-07-25 12:08:03.255262+00');
-INSERT INTO public.movies VALUES (3, 'The Fault in Our Stars', 'Cancer', 8.8, 'jhhfhj', '2023-07-25 12:08:03.255262+00');
-INSERT INTO public.movies VALUES (4, 'Barbie', 'Pink', 8.8, 'jhhfhj', '2023-07-25 12:08:03.255262+00');
-INSERT INTO public.movies VALUES (5, 'Barbie', 'Pink', 8.8, 'jhhfhj', '2023-07-25 12:08:03.255262+00');
-INSERT INTO public.movies VALUES (6, 'Barbie', 'Pink', 8.8, 'jhhfhj', '2023-07-25 12:08:03.255262+00');
-INSERT INTO public.movies VALUES (7, 'Barbie', 'Pink', 8.8, 'jhhfhj', '2023-07-25 12:08:03.255262+00');
->>>>>>> bdc9054b09e04c55c212f7486af0867a9d235cff
 
 
 --
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: adil
 --
 
-<<<<<<< HEAD
-=======
-INSERT INTO public.users VALUES (1, 'Ezel', '', '', 'ezelimo', '2023-07-26 10:25:29.029228+00');
->>>>>>> bdc9054b09e04c55c212f7486af0867a9d235cff
 
 
 --

@@ -43,7 +43,8 @@ func (q *Queries) AddMovie(ctx context.Context, arg AddMovieParams) (Movie, erro
 }
 
 const deleteMovie = `-- name: DeleteMovie :one
-DELETE FROM movies WHERE id = $1 RETURNING id
+DELETE FROM movies 
+WHERE id = $1 RETURNING id
 `
 
 func (q *Queries) DeleteMovie(ctx context.Context, id int64) (int64, error) {
@@ -53,7 +54,8 @@ func (q *Queries) DeleteMovie(ctx context.Context, id int64) (int64, error) {
 }
 
 const editMovie = `-- name: EditMovie :one
-UPDATE movies SET "description" = $1, "score" = $2, "image" = $3  WHERE id = $4 RETURNING title, description, score, image, release_date
+UPDATE movies SET "description" = $1, "score" = $2, "image" = $3  
+WHERE id = $4 RETURNING title, description, score, image, release_date
 `
 
 type EditMovieParams struct {
@@ -90,7 +92,9 @@ func (q *Queries) EditMovie(ctx context.Context, arg EditMovieParams) (EditMovie
 }
 
 const getMovie = `-- name: GetMovie :one
-SELECT title, description, score, image, release_date FROM movies WHERE id =$1
+SELECT title, description, score, image, release_date 
+FROM movies 
+WHERE id =$1
 `
 
 type GetMovieRow struct {

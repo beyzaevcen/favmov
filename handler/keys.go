@@ -6,4 +6,5 @@ const (
 	StoreKey key = iota
 	AdminKey
 	IDKey
+	JwtAuthKey
 )
